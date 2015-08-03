@@ -122,6 +122,7 @@ public class moveAndCollide : MonoBehaviour {
 
 	float calculateWallWeight(float foundDistance){
 		float distanceContribution = 1/foundDistance;
+		float test = 1; //I PUT THIS HERE TO STOP AN ERROR
 		//otherstuff
 		return test;
 	}
