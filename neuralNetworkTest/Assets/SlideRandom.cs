@@ -5,7 +5,7 @@ public class SlideRandom : MonoBehaviour {
 
 	// Use this for initialization
 	public Vector3 startingPosition;
-	const int WAIT = 3;
+	const int WAIT = 10;
 	public int rand;
 
 

@@ -80,7 +80,6 @@
     <Compile Include="Assets\_CompletedAssets\Scripts\Player\PlayerShooting.cs" />
     <Compile Include="Assets\aiController.cs" />
     <Compile Include="Assets\moveAndCollide.cs" />
-    <Compile Include="Assets\sensorScript.cs" />
     <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
     <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Basic.shader" />
     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Multiply.shader" />
@@ -110,6 +109,10 @@
     <None Include="Assets\Standard Assets %28Mobile%29\Shaders\Lightmap Shaders %28Legacy%29\Mobile Lightmap AlphaTest.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{05D0E15B-D1D8-82B1-08E4-3C110AD671BD}</Project>
+      <Name>Assembly-CSharp-firstpass</Name>
+    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
       <Project>{3DD8F6D0-0D21-8016-F222-9E497F90DEFF}</Project>
       <Name>Assembly-UnityScript-firstpass</Name>

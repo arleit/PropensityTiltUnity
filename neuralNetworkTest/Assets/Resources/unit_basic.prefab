@@ -88,6 +88,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 1
   gridMultiplier: .25
+  wallWeighting: 1
+  visitedWeighting: 0
 --- !u!114 &11430850
 MonoBehaviour:
   m_ObjectHideFlags: 1

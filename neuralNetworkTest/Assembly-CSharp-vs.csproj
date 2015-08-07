@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Collision.cs" />
      <Compile Include="Assets\MobileInput\Scripts\CrossPlatformInputManager.cs" />
      <Compile Include="Assets\MobileInput\Scripts\Joystick.cs" />
      <Compile Include="Assets\MobileInput\Scripts\MobileControlRig.cs" />
@@ -81,7 +82,6 @@
      <Compile Include="Assets\_CompletedAssets\Scripts\Player\PlayerShooting.cs" />
      <Compile Include="Assets\aiController.cs" />
      <Compile Include="Assets\moveAndCollide.cs" />
-     <Compile Include="Assets\sensorScript.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Basic.shader" />
