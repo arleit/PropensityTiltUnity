@@ -178,7 +178,7 @@ public class moveAndCollide : MonoBehaviour {
 		neuralValues = new Dictionary<XZKey,weightAngleTimesVisited> {}; 
 		hitColliders = Physics.OverlapSphere (transform.position, radius); //get current colliders in range
 		validColliders = new List<Collider>(); // initialize validColliders
-		testSphere = GameObject.Find("Sphere"); //FOR TESTING
+		testSphere = this.gameObject; //FOR TESTING
 		calculateValidColliders (); // add correct objects to found list of colliders
 
 	}

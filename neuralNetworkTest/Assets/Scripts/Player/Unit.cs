@@ -11,35 +11,41 @@ using System.Collections;
 using UnityEngine;
 
 
-public class Unit : MonoBehaviour{
+public class Unit{
 
 	public int hp;
 	public int hp_max;
 	public int dmg;
 	public int speed;
 	public int atkspeed;
+	public Unit sl;
+	public GameObject unit;
+	
+	public Unit (){
+		sl = this;
+		generate ();
+	}
 
-
-	public Unit(){
-
+	public Unit(Unit SL){
+		sl = SL;
+		generate ();
+		if (sl == null) {
+			sl = this;
+		}
 
 	}
 
-	void Start(){
-
-	}
-
-
-	void Update(){
-		print ("am teh humen");
-	}
 
 	void attack(Unit target){
 		//functionality breh
 	}
 
 	void generate(){
-
+		this.hp_max = Random.Range (8, 14);
+		this.hp = this.hp_max;
+		this.dmg = Random.Range (2, 4);
+		this.speed = Random.Range (1, 5);
+		this.atkspeed = Random.Range (1, 3);
 	}
 }
 
