@@ -13,7 +13,7 @@ public class moveAndCollide : MonoBehaviour {
 	XZKey previousSquare;
 	bool firstFrame;
 	public float wallWeighting = 1;
-	public float visitedWeighting = 0;
+	public float visitedWeighting = 1;
 
 	private List<listNode> neuralValues;
 	//the environment is divided up into squares, the amount of which is set by the multiplier gridMultiplier
@@ -94,7 +94,6 @@ public class moveAndCollide : MonoBehaviour {
 		for (int i=0; i<(neuralValues.Count); i++){
 			if(neuralValues[i].xzKey.X == currentKey.X && neuralValues[i].xzKey.Z == currentKey.Z){
 				found = true;
-				//print ("I have been at this space");
 				currentWTV.Angle = neuralValues[i].watv.Angle;
 				currentWTV.Weight = neuralValues[i].watv.Weight;
 				currentWTV.Weight = neuralValues[i].watv.TimesVisited;
@@ -113,7 +112,9 @@ public class moveAndCollide : MonoBehaviour {
 					neuralValues[i].watv.WallAvoid = currentWTV.WallAvoid;
 					neuralValues[i].watv.Weight = finalVector.Weight;
 					if(firstFrame == true || previousSquare.X != nearestX || previousSquare.Z != nearestZ){
-					neuralValues[i].watv.TimesVisited = neuralValues[i].watv.TimesVisited + .2f;
+						if(neuralValues[i].watv.TimesVisited < 5){
+					neuralValues[i].watv.TimesVisited = neuralValues[i].watv.TimesVisited + .4f;
+						}
 					}
 					currentWTV.Angle = finalVector.Angle;
 					currentWTV.Weight = finalVector.Weight;
@@ -130,9 +131,6 @@ public class moveAndCollide : MonoBehaviour {
 		//acceptable wall weight (with good results) is between .5 - 3
 		testSphere.transform.rotation = Quaternion.Lerp (testSphere.transform.rotation, Quaternion.Euler (0, WATV.Angle, 0), WATV.WallAvoid*Time.deltaTime);
 		testSphere.transform.Translate(.05f,0,0);
-		//Vector3 newangle = testSphere.transform.eulerAngles;
-		//newangle.y = WATV.Angle;
-		//testSphere.transform.eulerAngles = newangle;
 	}
 
 
@@ -149,22 +147,21 @@ public class moveAndCollide : MonoBehaviour {
 		float zmagVisited = 0;
 		float xmagFinal = 0;
 		float zmagFinal = 0;
-		zmagWall = (Mathf.Sin(wallVector.Angle))*wallVector.Weight;
-		zmagVisited = (Mathf.Sin(timeVisitedVector.Angle))*timeVisitedVector.Weight;
-		print ("zmagVisited: " + zmagVisited);
-		print ("wall zmag: "+zmagWall);
+		float tempAngleW = wallVector.Angle;
+		float tempAngleT = timeVisitedVector.Angle;
+		tempAngleT = ((tempAngleT * (2 * Mathf.PI)) / 360);
+		tempAngleW = ((tempAngleW * (2 * Mathf.PI)) / 360);
+		zmagWall = ((Mathf.Sin(tempAngleW))*wallVector.Weight);
+		zmagVisited = ((Mathf.Sin(tempAngleT))*timeVisitedVector.Weight)*-1;
 		zmagFinal = zmagWall + zmagVisited;
-		print ("final zmag: "+zmagFinal);
-		xmagWall = (Mathf.Cos(wallVector.Angle))*wallVector.Weight;
-		xmagVisited = (Mathf.Cos(timeVisitedVector.Angle))*timeVisitedVector.Weight;
-		print ("wall xmag: "+xmagWall);
+		xmagWall = ((Mathf.Cos(tempAngleW))*wallVector.Weight)*-1;
+		xmagVisited = ((Mathf.Cos(tempAngleT))*timeVisitedVector.Weight);
 		xmagFinal = xmagWall + xmagVisited;
-		print ("final xmag: "+xmagFinal);
 		float finalVectorMag = Mathf.Sqrt((float)Mathf.Pow(xmagFinal, 2) + (float)Mathf.Pow(zmagFinal, 2));
 		Vector wallVectorTEST = calculateWallVector (hitcolliders); //mult
 		float finalVectorAngle = ((calculateRaycastAngle (xmagFinal, zmagFinal)));
-		print ("timesvisitedangle: "+timeVisitedVector.Angle);
-		print ("wallvectorangle: "+wallVector.Angle);
+		print ("wallvector angle: "+wallVector.Angle);
+		print ("visitedvector angle: "+timeVisitedVector.Angle);
 		print ("final angle: "+finalVectorAngle);
 		print ("final mag: "+finalVectorMag);
 		currentWATVV.WallAvoid = wallVector.Weight;
@@ -183,50 +180,43 @@ public class moveAndCollide : MonoBehaviour {
 			if(neuralValues[i].xzKey.X == (currentKey.X+gridMultiplier) && neuralValues[i].xzKey.Z == currentKey.Z){
 				//right
 				xmag = xmag + neuralValues[i].watv.TimesVisited;
-				print ("right");
 			}
 			if(neuralValues[i].xzKey.X == (currentKey.X+gridMultiplier) && neuralValues[i].xzKey.Z == (currentKey.Z + gridMultiplier)){
 				//topright
 				xmag = xmag + neuralValues[i].watv.TimesVisited;
 				zmag = zmag + neuralValues[i].watv.TimesVisited;
-				print ("topright");
 			}
 			if(neuralValues[i].xzKey.X == currentKey.X && neuralValues[i].xzKey.Z == (currentKey.Z + gridMultiplier)){
 				//top
 				zmag = zmag + neuralValues[i].watv.TimesVisited;
-				print ("top");
 			}
 			if(neuralValues[i].xzKey.X == (currentKey.X - gridMultiplier) && neuralValues[i].xzKey.Z == (currentKey.Z + gridMultiplier)){
 				//topleft
 				zmag = zmag + neuralValues[i].watv.TimesVisited;
 				xmag = xmag - neuralValues[i].watv.TimesVisited;
-				print ("topleft");
 			}
 			if(neuralValues[i].xzKey.X == (currentKey.X - gridMultiplier) && neuralValues[i].xzKey.Z == currentKey.Z){
 				//left
 				xmag = xmag - neuralValues[i].watv.TimesVisited;
-				print ("left");
 			}
 			if(neuralValues[i].xzKey.X == (currentKey.X - gridMultiplier) && neuralValues[i].xzKey.Z == (currentKey.Z - gridMultiplier)){
 				//bottomleft
 				xmag = xmag - neuralValues[i].watv.TimesVisited;
 				zmag = zmag - neuralValues[i].watv.TimesVisited;
-				print ("bottomeleft");
 			}
 			if(neuralValues[i].xzKey.X == currentKey.X && neuralValues[i].xzKey.Z == (currentKey.Z - gridMultiplier)){
 				//bottom
 				zmag = zmag - neuralValues[i].watv.TimesVisited;
-				print ("bottom");
 			}
 			if(neuralValues[i].xzKey.X == (currentKey.X+gridMultiplier) && neuralValues[i].xzKey.Z == (currentKey.Z - gridMultiplier)){
 				//bottomright
 				zmag = zmag - neuralValues[i].watv.TimesVisited;
 				xmag = xmag + neuralValues[i].watv.TimesVisited;
-				print ("bottomright");
 			}
 		}
 		finalmag = Mathf.Sqrt (Mathf.Pow (xmag, 2) + Mathf.Pow (zmag, 2));
-		weightTimesVisitedAngle = (calculateRaycastAngle (xmag, zmag));
+		weightTimesVisitedAngle = ((calculateRaycastAngle (xmag, zmag))*-1-180);
+		weightTimesVisitedAngle = (weightTimesVisitedAngle * Mathf.PI * 2 / 360);
 		Vector timesVisitedVector = new Vector (finalmag, weightTimesVisitedAngle);
 		return timesVisitedVector;
 	}
@@ -246,19 +236,11 @@ public class moveAndCollide : MonoBehaviour {
 								float xmag = calcXmag (x2, x1);
 								float zmag = calcZmag (z2, z1);
 								float distance = calculateDistance (xmag, zmag);
-								//float angle = calculateRaycastAngle (xmag, zmag);
-								//angle = (angle / 360) * 2*Mathf.PI;
-								//float weight = 1/distance;
-								//tempX = (Mathf.Cos (angle)*weight);
-								//tempY = (Mathf.Sin (angle)*weight);
 								finalX = finalX + xmag;
 								finalY = finalY+ zmag;
 						}
 			}
-			print ("wall zmag in func: "+finalY);
-			print ("wall xmag in func: "+finalX);
 				finalWeight = Mathf.Sqrt (Mathf.Pow (finalX, 2) + Mathf.Pow (finalY, 2));
-				print ("wall V when using raycastangle: "+ calculateRaycastAngle(finalX, finalY));
 				finalAngle = calculateRaycastAngle(finalX, finalY);
 				Vector wallVector = new Vector (finalWeight, finalAngle);
 				return wallVector;
@@ -302,6 +284,7 @@ public class moveAndCollide : MonoBehaviour {
 			if(xmag>0){
 				finalAngle = 0;
 			}else{
+				//print ("I HERE");
 				finalAngle = 180;
 			}
 		} else {
@@ -325,7 +308,6 @@ public class moveAndCollide : MonoBehaviour {
 	}
 
 	float calcuatetimesVisitedWeight(int timesVisited){
-		//timesVisited x constant
 		return 1f;
 	}
 
@@ -348,7 +330,6 @@ public class moveAndCollide : MonoBehaviour {
 		for (int i=0; i<validColliders.Count; i++) {
 			print ("mag x: "+ (validColliders[i].transform.position.x - testSphere.transform.position.x));
 			print ("mag y: "+ (validColliders[i].transform.position.z - testSphere.transform.position.z));
-			//print ("angle calculation: " + calculateRaycastAngle(testSphere.transform.position.x, testSphere.transform.position.z, validColliders[i].transform.position.x, validColliders[i].transform.position.z));
 				}
 		}
 
@@ -369,12 +350,9 @@ public class moveAndCollide : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		firstFrame = true;
-		//Collider[] hitColliders; // holds all colliders currently sensed
 		neuralValues = new List<listNode> {}; 
-		//hitColliders = Physics.OverlapSphere (transform.position, radius); //get current colliders in range
 		validColliders = new List<Collider>(); // initialize validColliders
 		testSphere = GameObject.Find("Sphere"); //FOR TESTING
-		//calculateValidColliders (hitColliders); // add correct objects to found list of colliders
 		previousSquare = new XZKey (0, 0);
 
 	}
@@ -389,10 +367,7 @@ public class moveAndCollide : MonoBehaviour {
 		testSphere.transform.eulerAngles = lockedAxis;
 		hitColliders = Physics.OverlapSphere (transform.position, radius);
 		calculateValidColliders(hitColliders); //see method
-		//printValidCollider(); //FOR TESTING changes seen wall to blue for debugging
-		//testSphere.transform.Translate(Vector3.right*Time.deltaTime*1.3f); //FOR TESTING
 		currentSpace (testSphere.transform.position.x, testSphere.transform.position.z, hitColliders);
-		//printDictionary ();
 		printValidCollider ();
 		if (firstFrame == true) {
 			firstFrame = false;
